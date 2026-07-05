@@ -75,10 +75,11 @@ from other people.) You can also register a brand-new account from the UI.
 ## How it fits together
 
 1. The client calls `/api/...` through a Vite dev proxy to the Express server.
-2. `POST /auth/login` returns a JWT; `AuthContext` stores it in `localStorage`
-   and the API client sends it as `Authorization: Bearer <token>`.
-3. Route guards in `_appLayout.tsx` (`beforeLoad`) redirect unauthenticated
-   users to `/login`.
+2. `POST /auth/login` sets the JWT in an **httpOnly cookie** (`feedme_token`) —
+   never exposed to JS — and the browser sends it back automatically. The API
+   client uses `credentials: "include"`; `POST /auth/logout` clears the cookie.
+3. Route guards in `_appLayout.tsx` (`beforeLoad`) confirm the session with a
+   cached `GET /me` and redirect unauthenticated users to `/login`.
 4. Data is read with TanStack Query hooks (`useRecipes`, `useCookbooks`, …) and
    changed with mutations that invalidate the cache so the UI refreshes.
 5. Every form uses react-hook-form with a Zod resolver; the same validation

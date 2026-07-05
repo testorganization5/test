@@ -30,9 +30,8 @@ function RegisterPage() {
       const auth = await request<AuthResponse>("/auth/register", {
         method: "POST",
         body: values,
-        auth: false,
       });
-      login(auth);
+      login(auth.user);
       navigate({ to: "/" });
     } catch (err) {
       setFormError(

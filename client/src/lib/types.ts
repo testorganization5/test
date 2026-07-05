@@ -57,6 +57,5 @@ export interface Comment {
 }
 
 export interface AuthResponse {
-  token: string;
   user: User;
 }

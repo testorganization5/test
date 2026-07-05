@@ -32,8 +32,8 @@ export function UserMenu() {
 
   if (!user) return null;
 
-  const onLogout = () => {
-    logout();
+  const onLogout = async () => {
+    await logout();
     navigate({ to: "/login" });
   };
 

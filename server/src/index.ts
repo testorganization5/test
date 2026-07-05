@@ -4,6 +4,7 @@ import express, {
   type Response,
 } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
@@ -15,8 +16,12 @@ import { cookbooksRouter } from "./routes/cookbooks.routes.js";
 import { commentsRouter } from "./routes/comments.routes.js";
 
 const app = express();
-app.use(cors());
+// `credentials: true` + reflecting the request origin lets the browser send the
+// auth cookie (needed if the client ever calls the API cross-origin rather than
+// through the Vite same-origin proxy).
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 // All API routes live under /api so the Vite dev proxy can forward them.
 const api = express.Router();

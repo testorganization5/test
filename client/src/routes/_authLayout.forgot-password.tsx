@@ -37,7 +37,6 @@ function ForgotPasswordPage() {
       const res = await request<ForgotResponse>("/auth/forgot-password", {
         method: "POST",
         body: values,
-        auth: false,
       });
       // Demo backend returns the token directly (normally emailed).
       setResetToken(res.resetToken ?? "");

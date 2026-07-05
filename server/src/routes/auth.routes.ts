@@ -1,7 +1,7 @@
 import { Router } from "express";
 import bcrypt from "bcryptjs";
 import { config } from "../config.js";
-import { signToken } from "../auth/jwt.js";
+import { clearAuthCookie, setAuthCookie } from "../auth/cookie.js";
 import {
   findUserByEmail,
   nextId,
@@ -39,8 +39,9 @@ authRouter.post("/register", validateBody(registerSchema), (req, res) => {
   };
   users.push(user);
 
-  const token = signToken(user.id);
-  res.status(201).json({ token, user: toPublicUser(user) });
+  // Issue the JWT as an httpOnly cookie; the user object is safe to return.
+  setAuthCookie(res, user.id);
+  res.status(201).json({ user: toPublicUser(user) });
 });
 
 // POST /auth/login
@@ -51,8 +52,14 @@ authRouter.post("/login", validateBody(loginSchema), (req, res) => {
     return res.status(401).json({ message: "Invalid email or password" });
   }
 
-  const token = signToken(user.id);
-  res.json({ token, user: toPublicUser(user) });
+  setAuthCookie(res, user.id);
+  res.json({ user: toPublicUser(user) });
+});
+
+// POST /auth/logout — clears the auth cookie.
+authRouter.post("/logout", (_req, res) => {
+  clearAuthCookie(res);
+  res.json({ message: "Logged out" });
 });
 
 // POST /auth/forgot-password

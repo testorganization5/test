@@ -36,7 +36,6 @@ function ResetPasswordPage() {
       await request("/auth/reset-password", {
         method: "POST",
         body: { token: values.token, password: values.password },
-        auth: false,
       });
       navigate({ to: "/login" });
     } catch (err) {

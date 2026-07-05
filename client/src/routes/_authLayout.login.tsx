@@ -33,9 +33,8 @@ function LoginPage() {
       const auth = await request<AuthResponse>("/auth/login", {
         method: "POST",
         body: values,
-        auth: false,
       });
-      login(auth);
+      login(auth.user);
       navigate({ to: redirect ?? "/" });
     } catch (err) {
       setFormError(
