@@ -92,7 +92,12 @@ npm run build          # production build of server + client
 npm run openapi:lint   # lint the OpenAPI document with Redocly
 ```
 
-The OpenAPI spec is also served at **http://localhost:8080/api/openapi.yaml**.
+## API docs (Swagger UI)
+
+With the server running, open **http://localhost:8080/api/docs** for interactive
+Swagger UI. Click **Authorize** and paste a JWT (from a `/auth/login` response)
+to try the protected endpoints. The raw spec is served at
+**http://localhost:8080/api/openapi.yaml**.
 
 ## Notes
 

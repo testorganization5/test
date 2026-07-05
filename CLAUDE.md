@@ -26,7 +26,7 @@ Demo login: `john@feedme.dev` / `password123` (also `vasya@feedme.dev`).
 
 ## Architecture
 
-**Client ⇄ server contract.** Client always calls `/api/...` (Vite dev proxy → Express on :8080). Keep three things in sync when changing an endpoint's shape: the route in `server/src/routes/`, the response shaper in `server/src/serializers.ts`, and the client DTO in `client/src/lib/types.ts`. `openapi/openapi.yaml` is authored by hand — update it too.
+**Client ⇄ server contract.** Client always calls `/api/...` (Vite dev proxy → Express on :8080). Keep three things in sync when changing an endpoint's shape: the route in `server/src/routes/`, the response shaper in `server/src/serializers.ts`, and the client DTO in `client/src/lib/types.ts`. `openapi/openapi.yaml` is authored by hand — update it too. The server serves the raw spec at `/api/openapi.yaml` and interactive Swagger UI at `/api/docs` (an HTML page in `index.ts` loading Swagger UI from a CDN — no dep).
 
 **Server is stateful in memory, no DB.** `server/src/data/store.ts` exports mutable arrays (`users`, `recipes`, `cookbooks`, `comments`) seeded from `data/*.ts`; routes mutate them directly and everything resets on restart. Bcrypt hashes are computed at boot from plaintext seed passwords. `nextId(prefix)` generates ids.
 

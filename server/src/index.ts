@@ -33,6 +33,32 @@ api.get("/openapi.yaml", (_req, res) => {
   }
 });
 
+// Interactive API docs (Swagger UI). Loads Swagger UI from a CDN and points it
+// at the spec above — no extra npm dependency needed.
+api.get("/docs", (_req, res) => {
+  res.type("html").send(`<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Feedme API — Swagger UI</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+    <style>body { margin: 0; }</style>
+  </head>
+  <body>
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin></script>
+    <script>
+      window.onload = () => {
+        window.ui = SwaggerUIBundle({
+          url: "/api/openapi.yaml",
+          dom_id: "#swagger-ui",
+        });
+      };
+    </script>
+  </body>
+</html>`);
+});
+
 api.use("/auth", authRouter);
 api.use("/me", meRouter);
 api.use("/recipes", recipesRouter);
@@ -54,5 +80,6 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 
 app.listen(config.port, () => {
   console.log(`Feedme API running on http://localhost:${config.port}/api`);
+  console.log(`Swagger docs:  http://localhost:${config.port}/api/docs`);
   console.log(`Demo login: john@feedme.dev / password123`);
 });
