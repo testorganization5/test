@@ -1,0 +1,664 @@
+openapi: 3.1.0
+info:
+  title: Feedme Cookbook API
+  version: 1.0.0
+  description: >
+    REST API for the Feedme cookbook demo app. Data is stored in-memory on the
+    server (no database) and resets on restart. All endpoints are served under
+    the `/api` prefix. Protected endpoints require a Bearer JWT obtained from
+    `/auth/login` or `/auth/register`.
+servers:
+  - url: http://localhost:8080/api
+    description: Local development server
+
+tags:
+  - name: Auth
+    description: Registration, login and password reset
+  - name: Me
+    description: The currently authenticated user
+  - name: Recipes
+  - name: Cookbooks
+  - name: Comments
+
+security:
+  - bearerAuth: []
+
+paths:
+  /health:
+    get:
+      tags: [Auth]
+      summary: Health check
+      security: []
+      responses:
+        "200":
+          description: Service is up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Create a new account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RegisterInput" }
+      responses:
+        "201":
+          description: Account created
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Sign in
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/LoginInput" }
+      responses:
+        "200":
+          description: Signed in
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/AuthResponse" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /auth/forgot-password:
+    post:
+      tags: [Auth]
+      summary: Request a password reset token
+      description: >
+        In production this would email a reset link. For the demo the reset
+        token is returned directly in the response body.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email: { type: string, format: email }
+      responses:
+        "200":
+          description: Reset token generated (if the email exists)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message: { type: string }
+                  resetToken:
+                    type: string
+                    description: DEMO ONLY — normally delivered by email.
+        "400": { $ref: "#/components/responses/ValidationError" }
+
+  /auth/reset-password:
+    post:
+      tags: [Auth]
+      summary: Reset password using a token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, password]
+              properties:
+                token: { type: string }
+                password: { type: string, minLength: 6 }
+      responses:
+        "200":
+          description: Password reset
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Message" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+
+  /me:
+    get:
+      tags: [Me]
+      summary: Get the current user
+      responses:
+        "200":
+          description: The authenticated user
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    patch:
+      tags: [Me]
+      summary: Update profile fields
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UpdateProfileInput" }
+      responses:
+        "200":
+          description: Updated user
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/User" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "409": { $ref: "#/components/responses/Conflict" }
+
+  /me/password:
+    patch:
+      tags: [Me]
+      summary: Change password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [currentPassword, newPassword]
+              properties:
+                currentPassword: { type: string }
+                newPassword: { type: string, minLength: 6 }
+      responses:
+        "200":
+          description: Password updated
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Message" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /recipes:
+    get:
+      tags: [Recipes]
+      summary: List recipes
+      parameters:
+        - { in: query, name: search, schema: { type: string } }
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [popularity, views, rating, cooking-time, newest]
+        - { in: query, name: maxCookingTime, schema: { type: integer } }
+        - { in: query, name: mine, schema: { type: boolean } }
+        - { in: query, name: limit, schema: { type: integer } }
+      responses:
+        "200":
+          description: Recipe list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Recipe" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [Recipes]
+      summary: Create a recipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RecipeInput" }
+      responses:
+        "201":
+          description: Created recipe
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Recipe" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /recipes/{id}:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string } }
+    get:
+      tags: [Recipes]
+      summary: Get a recipe (increments view count)
+      responses:
+        "200":
+          description: Recipe
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Recipe" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [Recipes]
+      summary: Update a recipe (owner only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/RecipeInput" }
+      responses:
+        "200":
+          description: Updated recipe
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Recipe" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [Recipes]
+      summary: Delete a recipe (owner only)
+      responses:
+        "204": { description: Deleted }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /recipes/{id}/like:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string } }
+    put:
+      tags: [Recipes]
+      summary: Like a recipe
+      responses:
+        "200":
+          description: Updated recipe
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Recipe" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [Recipes]
+      summary: Remove a like
+      responses:
+        "200":
+          description: Updated recipe
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Recipe" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /recipes/{id}/comments:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string } }
+    get:
+      tags: [Comments]
+      summary: List comments for a recipe
+      responses:
+        "200":
+          description: Comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Comment" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [Comments]
+      summary: Add a comment to a recipe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CommentInput" }
+      responses:
+        "201":
+          description: Created comment
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Comment" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /cookbooks:
+    get:
+      tags: [Cookbooks]
+      summary: List cookbooks
+      parameters:
+        - { in: query, name: search, schema: { type: string } }
+        - in: query
+          name: sort
+          schema: { type: string, enum: [popularity, views, popular, rating, newest] }
+        - in: query
+          name: type
+          description: Repeatable. A cookbook must have all requested types.
+          schema:
+            type: array
+            items: { $ref: "#/components/schemas/CookbookType" }
+        - { in: query, name: mine, schema: { type: boolean } }
+        - { in: query, name: hideMine, schema: { type: boolean } }
+        - { in: query, name: limit, schema: { type: integer } }
+      responses:
+        "200":
+          description: Cookbook list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Cookbook" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+    post:
+      tags: [Cookbooks]
+      summary: Create a cookbook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CookbookInput" }
+      responses:
+        "201":
+          description: Created cookbook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cookbook" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+
+  /cookbooks/{id}:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string } }
+    get:
+      tags: [Cookbooks]
+      summary: Get a cookbook with nested recipes (increments view count)
+      responses:
+        "200":
+          description: Cookbook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cookbook" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    patch:
+      tags: [Cookbooks]
+      summary: Update a cookbook (owner only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CookbookInput" }
+      responses:
+        "200":
+          description: Updated cookbook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cookbook" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [Cookbooks]
+      summary: Delete a cookbook (owner only)
+      responses:
+        "204": { description: Deleted }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /cookbooks/{id}/clone:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string } }
+    post:
+      tags: [Cookbooks]
+      summary: Clone a cookbook into your account
+      responses:
+        "201":
+          description: Cloned cookbook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cookbook" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /cookbooks/{id}/like:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string } }
+    put:
+      tags: [Cookbooks]
+      summary: Like a cookbook
+      responses:
+        "200":
+          description: Updated cookbook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cookbook" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    delete:
+      tags: [Cookbooks]
+      summary: Remove a like
+      responses:
+        "200":
+          description: Updated cookbook
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Cookbook" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /cookbooks/{id}/comments:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string } }
+    get:
+      tags: [Comments]
+      summary: List comments for a cookbook
+      responses:
+        "200":
+          description: Comments
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: "#/components/schemas/Comment" }
+        "404": { $ref: "#/components/responses/NotFound" }
+    post:
+      tags: [Comments]
+      summary: Add a comment to a cookbook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/CommentInput" }
+      responses:
+        "201":
+          description: Created comment
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Comment" }
+        "400": { $ref: "#/components/responses/ValidationError" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+  /comments/{id}:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string } }
+    delete:
+      tags: [Comments]
+      summary: Delete your own comment
+      responses:
+        "204": { description: Deleted }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "404": { $ref: "#/components/responses/NotFound" }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    Unauthorized:
+      description: Authentication required or failed
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Message" }
+    Forbidden:
+      description: You do not own this resource
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Message" }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Message" }
+    Conflict:
+      description: Resource already exists
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/Message" }
+    ValidationError:
+      description: Request body failed validation
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ValidationError" }
+
+  schemas:
+    Message:
+      type: object
+      properties:
+        message: { type: string }
+
+    ValidationError:
+      type: object
+      properties:
+        message: { type: string, example: Validation failed }
+        errors:
+          type: object
+          additionalProperties: { type: string }
+          description: Map of field name to error message.
+
+    RegisterInput:
+      type: object
+      required: [name, email, password]
+      properties:
+        name: { type: string, minLength: 2 }
+        email: { type: string, format: email }
+        password: { type: string, minLength: 6 }
+
+    LoginInput:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string }
+
+    UpdateProfileInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 2 }
+        email: { type: string, format: email }
+        bio: { type: string, maxLength: 500 }
+        avatarUrl: { type: string, format: uri }
+
+    AuthResponse:
+      type: object
+      properties:
+        token: { type: string }
+        user: { $ref: "#/components/schemas/User" }
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string, format: email }
+        bio: { type: string }
+        avatarUrl: { type: string, format: uri }
+
+    Ingredient:
+      type: object
+      required: [name, amount]
+      properties:
+        name: { type: string }
+        amount: { type: string }
+
+    CookbookType:
+      type: string
+      enum: [vegetarian, without-milk, without-eggs]
+
+    RecipeInput:
+      type: object
+      required: [title, imageUrl, description, ingredients, directions, cookingTimeMins]
+      properties:
+        title: { type: string, minLength: 2 }
+        imageUrl: { type: string, format: uri }
+        description: { type: string }
+        ingredients:
+          type: array
+          minItems: 1
+          items: { $ref: "#/components/schemas/Ingredient" }
+        directions: { type: string }
+        cookingTimeMins: { type: integer, minimum: 1 }
+
+    Recipe:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        imageUrl: { type: string, format: uri }
+        description: { type: string }
+        ingredients:
+          type: array
+          items: { $ref: "#/components/schemas/Ingredient" }
+        directions: { type: string }
+        cookingTimeMins: { type: integer }
+        views: { type: integer }
+        likesCount: { type: integer }
+        likedByMe: { type: boolean }
+        commentsCount: { type: integer }
+        author: { $ref: "#/components/schemas/User" }
+
+    CookbookInput:
+      type: object
+      required: [title, imageUrl, description]
+      properties:
+        title: { type: string, minLength: 2 }
+        imageUrl: { type: string, format: uri }
+        description: { type: string }
+        type:
+          type: array
+          items: { $ref: "#/components/schemas/CookbookType" }
+        recipeIds:
+          type: array
+          items: { type: string }
+
+    Cookbook:
+      type: object
+      properties:
+        id: { type: string }
+        title: { type: string }
+        imageUrl: { type: string, format: uri }
+        description: { type: string }
+        type:
+          type: array
+          items: { $ref: "#/components/schemas/CookbookType" }
+        recipeIds:
+          type: array
+          items: { type: string }
+        views: { type: integer }
+        likesCount: { type: integer }
+        likedByMe: { type: boolean }
+        commentsCount: { type: integer }
+        author: { $ref: "#/components/schemas/User" }
+        recipes:
+          type: array
+          description: Present on the detail endpoint only.
+          items: { $ref: "#/components/schemas/Recipe" }
+
+    CommentInput:
+      type: object
+      required: [text]
+      properties:
+        text: { type: string, minLength: 1, maxLength: 1000 }
+
+    Comment:
+      type: object
+      properties:
+        id: { type: string }
+        targetType: { type: string, enum: [recipe, cookbook] }
+        targetId: { type: string }
+        text: { type: string }
+        createdAt: { type: string, format: date-time }
+        author: { $ref: "#/components/schemas/User" }

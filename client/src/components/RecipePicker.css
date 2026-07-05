@@ -1,0 +1,36 @@
+.picker {
+  max-height: 240px;
+  overflow-y: auto;
+  border: 1px solid var(--bg-4);
+  border-radius: var(--radius);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.picker__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.picker__item:hover {
+  background: var(--bg-2);
+}
+
+.picker__item input {
+  accent-color: var(--primary-yellow);
+  width: 16px;
+  height: 16px;
+}
+
+.picker__thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover;
+}

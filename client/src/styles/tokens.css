@@ -1,0 +1,28 @@
+/* Design tokens extracted from the Figma file. Every component reads from
+   these CSS custom properties instead of hard-coding colors or fonts. */
+:root {
+  /* Colors */
+  --primary-yellow: #ffbc01;
+  --primary-yellow-hover: #e6a900;
+  --text-main: #181818;
+  --text-secondary: #494949;
+  --bg-main: #ffffff;
+  --bg-2: #f7f7f7;
+  --bg-3: #ededed;
+  --bg-4: #dadada;
+  --danger: #eb1c23;
+
+  /* Shadows */
+  --shadow-main: 0 0 16px rgba(0, 0, 0, 0.08);
+  --shadow-hover: 0 0 32px rgba(0, 0, 0, 0.24);
+
+  /* Typography */
+  --font-heading: "Montserrat", system-ui, sans-serif;
+  --font-body: "Nunito", system-ui, sans-serif;
+
+  /* Layout */
+  --radius: 8px;
+  --radius-lg: 12px;
+  --content-max: 1280px;
+  --header-height: 72px;
+}

@@ -1,0 +1,98 @@
+import type { Cookbook } from "../types.js";
+
+const img = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=640&q=80&auto=format&fit=crop`;
+
+const LOREM =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Magna amet etiam risus aliquet sit vel.";
+
+export const seedCookbooks: Cookbook[] = [
+  {
+    id: "c1",
+    title: "Delicious fruits and pancakes",
+    imageUrl: img("1484980972926-edee96e0960d"),
+    description: LOREM,
+    type: ["vegetarian"],
+    authorId: "u1",
+    recipeIds: ["r3", "r1"],
+    views: 12300,
+    likedBy: ["u2"],
+  },
+  {
+    id: "c2",
+    title: "Fresh fish favourites",
+    imageUrl: img("1414235077428-338989a2e8c0"),
+    description: LOREM,
+    type: ["without-milk"],
+    authorId: "u1",
+    recipeIds: ["r5"],
+    views: 12000,
+    likedBy: [],
+  },
+  {
+    id: "c3",
+    title: "Hearty meat dishes",
+    imageUrl: img("1551782450-a2132b4ba21d"),
+    description: LOREM,
+    type: ["without-milk", "without-eggs"],
+    authorId: "u2",
+    recipeIds: ["r1", "r7"],
+    views: 11000,
+    likedBy: ["u1"],
+  },
+  {
+    id: "c4",
+    title: "Cozy soups and bowls",
+    imageUrl: img("1476224203421-9ac39bcb3327"),
+    description: LOREM,
+    type: ["vegetarian", "without-eggs"],
+    authorId: "u2",
+    recipeIds: ["r2", "r4"],
+    views: 10300,
+    likedBy: [],
+  },
+  {
+    id: "c5",
+    title: "Weeknight comfort food",
+    imageUrl: img("1540189549336-e6e99c3679fe"),
+    description: LOREM,
+    type: [],
+    authorId: "u1",
+    recipeIds: ["r9", "r6"],
+    views: 12000,
+    likedBy: ["u1", "u2"],
+  },
+  {
+    id: "c6",
+    title: "Sweet treats and cakes",
+    imageUrl: img("1502741224143-90386d7f8c82"),
+    description: LOREM,
+    type: ["vegetarian"],
+    authorId: "u2",
+    recipeIds: ["r8"],
+    views: 12000,
+    likedBy: [],
+  },
+  {
+    id: "c7",
+    title: "Fresh fruits and vegetables",
+    imageUrl: img("1546069901-ba9599a7e63c"),
+    description: LOREM,
+    type: ["vegetarian", "without-milk", "without-eggs"],
+    authorId: "u1",
+    recipeIds: ["r4", "r10"],
+    views: 12300,
+    likedBy: ["u2"],
+  },
+  {
+    id: "c8",
+    title: "Best of burgers",
+    imageUrl: img("1432139555190-58524dae6a55"),
+    description: LOREM,
+    type: [],
+    authorId: "u2",
+    recipeIds: ["r7"],
+    views: 12000,
+    likedBy: ["u1"],
+  },
+];

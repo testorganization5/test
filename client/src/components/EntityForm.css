@@ -1,0 +1,54 @@
+.entity-form__title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.entity-form__checks {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.entity-form__ingredient {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.entity-form__remove {
+  width: 40px;
+  border: 1px solid var(--bg-4);
+  border-radius: var(--radius);
+  background: var(--bg-main);
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+.entity-form__remove:hover:not(:disabled) {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+.entity-form__remove:disabled {
+  opacity: 0.4;
+}
+
+.entity-form__add {
+  margin-top: 4px;
+  background: none;
+  border: none;
+  color: var(--primary-yellow);
+  font-weight: 600;
+  font-size: 14px;
+  padding: 4px 0;
+}
+.entity-form__add:hover {
+  text-decoration: underline;
+}
+
+.entity-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}

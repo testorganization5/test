@@ -1,0 +1,27 @@
+.searchbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--bg-3);
+  border-radius: var(--radius);
+  min-width: 220px;
+}
+
+.searchbar__icon {
+  font-size: 14px;
+  opacity: 0.6;
+}
+
+.searchbar__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.searchbar__input:focus {
+  outline: none;
+}

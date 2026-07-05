@@ -1,0 +1,25 @@
+.like {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.like__heart {
+  font-size: 16px;
+  color: var(--bg-4);
+  line-height: 1;
+}
+
+.like--on .like__heart {
+  color: var(--primary-yellow);
+}
+
+.like:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

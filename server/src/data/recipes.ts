@@ -1,0 +1,178 @@
+import type { Recipe } from "../types.js";
+
+// Food photos are served from the Unsplash CDN (fast + reliable) by photo id,
+// so the demo needs no local binary assets.
+const img = (id: string) =>
+  `https://images.unsplash.com/photo-${id}?w=640&q=80&auto=format&fit=crop`;
+
+const LOREM =
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam sit amet velit dapibus, egestas nunc vel, tincidunt purus. Vestibulum ac ullamcorper etiam interdum vitae semper.";
+
+export const seedRecipes: Recipe[] = [
+  {
+    id: "r1",
+    title: "Fresh meat with potato and cheese",
+    imageUrl: img("1504674900247-0877df9cc836"),
+    description: LOREM,
+    ingredients: [
+      { name: "Potatoes", amount: "500 g" },
+      { name: "Cheese", amount: "200 g" },
+      { name: "Beef", amount: "400 g" },
+      { name: "Butter", amount: "50 g" },
+    ],
+    directions:
+      "Boil the potatoes until tender, sear the beef, layer with cheese and bake at 200°C for 20 minutes.",
+    authorId: "u1",
+    views: 12000,
+    likedBy: ["u2"],
+    cookingTimeMins: 45,
+  },
+  {
+    id: "r2",
+    title: "Creamy pumpkin soup",
+    imageUrl: img("1476124369491-e7addf5db371"),
+    description: LOREM,
+    ingredients: [
+      { name: "Pumpkin", amount: "800 g" },
+      { name: "Cream", amount: "150 ml" },
+      { name: "Onion", amount: "1 pc" },
+    ],
+    directions:
+      "Roast the pumpkin, blend with sautéed onion and cream, season and serve warm.",
+    authorId: "u2",
+    views: 9800,
+    likedBy: ["u1"],
+    cookingTimeMins: 60,
+  },
+  {
+    id: "r3",
+    title: "Berry pancakes with maple syrup",
+    imageUrl: img("1567620905732-2d1ec7ab7445"),
+    description: LOREM,
+    ingredients: [
+      { name: "Flour", amount: "250 g" },
+      { name: "Milk", amount: "300 ml" },
+      { name: "Berries", amount: "150 g" },
+      { name: "Eggs", amount: "2 pc" },
+    ],
+    directions:
+      "Whisk the batter, cook pancakes on a hot pan, top with berries and maple syrup.",
+    authorId: "u1",
+    views: 15400,
+    likedBy: [],
+    cookingTimeMins: 25,
+  },
+  {
+    id: "r4",
+    title: "Rainbow buddha bowl",
+    imageUrl: img("1512621776951-a57141f2eefd"),
+    description: LOREM,
+    ingredients: [
+      { name: "Quinoa", amount: "200 g" },
+      { name: "Avocado", amount: "1 pc" },
+      { name: "Chickpeas", amount: "150 g" },
+      { name: "Mixed veg", amount: "300 g" },
+    ],
+    directions: "Cook the quinoa, roast the veg, assemble and drizzle with tahini.",
+    authorId: "u2",
+    views: 7300,
+    likedBy: ["u1", "u2"],
+    cookingTimeMins: 35,
+  },
+  {
+    id: "r5",
+    title: "Grilled salmon with lime",
+    imageUrl: img("1467003909585-2f8a72700288"),
+    description: LOREM,
+    ingredients: [
+      { name: "Salmon fillet", amount: "2 pc" },
+      { name: "Lime", amount: "1 pc" },
+      { name: "Olive oil", amount: "2 tbsp" },
+    ],
+    directions: "Marinate the salmon, grill 4 minutes per side, finish with lime.",
+    authorId: "u1",
+    views: 11200,
+    likedBy: [],
+    cookingTimeMins: 20,
+  },
+  {
+    id: "r6",
+    title: "Spiced tomato shakshuka",
+    imageUrl: img("1484723091739-30a097e8f929"),
+    description: LOREM,
+    ingredients: [
+      { name: "Tomatoes", amount: "400 g" },
+      { name: "Eggs", amount: "4 pc" },
+      { name: "Bell pepper", amount: "1 pc" },
+    ],
+    directions: "Simmer the tomato base, crack in eggs, cover and cook until set.",
+    authorId: "u2",
+    views: 6100,
+    likedBy: ["u1"],
+    cookingTimeMins: 30,
+  },
+  {
+    id: "r7",
+    title: "Classic beef burger",
+    imageUrl: img("1565299624946-b28f40a0ae38"),
+    description: LOREM,
+    ingredients: [
+      { name: "Beef patty", amount: "180 g" },
+      { name: "Brioche bun", amount: "1 pc" },
+      { name: "Cheddar", amount: "1 slice" },
+    ],
+    directions: "Grill the patty, melt the cheese, build the burger and serve.",
+    authorId: "u1",
+    views: 18900,
+    likedBy: ["u2"],
+    cookingTimeMins: 15,
+  },
+  {
+    id: "r8",
+    title: "Layered berry cake",
+    imageUrl: img("1533089860892-a7c6f0a88666"),
+    description: LOREM,
+    ingredients: [
+      { name: "Sponge", amount: "3 layers" },
+      { name: "Cream", amount: "400 ml" },
+      { name: "Strawberries", amount: "250 g" },
+    ],
+    directions: "Layer sponge with cream and berries, chill and slice.",
+    authorId: "u2",
+    views: 8700,
+    likedBy: [],
+    cookingTimeMins: 90,
+  },
+  {
+    id: "r9",
+    title: "Honey glazed chicken wings",
+    imageUrl: img("1495521821757-a1efb6729352"),
+    description: LOREM,
+    ingredients: [
+      { name: "Chicken wings", amount: "800 g" },
+      { name: "Honey", amount: "3 tbsp" },
+      { name: "Soy sauce", amount: "2 tbsp" },
+    ],
+    directions: "Toss wings in glaze and bake until sticky and golden.",
+    authorId: "u1",
+    views: 13300,
+    likedBy: ["u1"],
+    cookingTimeMins: 40,
+  },
+  {
+    id: "r10",
+    title: "Garden pasta primavera",
+    imageUrl: img("1473093295043-cdd812d0e601"),
+    description: LOREM,
+    ingredients: [
+      { name: "Pasta", amount: "300 g" },
+      { name: "Seasonal veg", amount: "350 g" },
+      { name: "Parmesan", amount: "60 g" },
+    ],
+    directions: "Cook pasta, toss with sautéed veg and parmesan.",
+    authorId: "u2",
+    views: 5400,
+    likedBy: [],
+    cookingTimeMins: 25,
+  },
+];
