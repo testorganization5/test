@@ -347,6 +347,7 @@ q::after {
             font-style: normal;
             font-weight: 600;
             text-transform: capitalize;
+            margin-top: 44px;
                    }
 
 
@@ -450,30 +451,92 @@ q::after {
     gap: 8px;
 }
     
+.picked-by-us {
+    background: #FCFAF8;;
+          color: #000;
+          text-align: center;
+          font-family: Nunito;
+          font-size: 36px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 48px;
+          padding: 90px 0px 40px 0px;
+}
+
+.picked-grid {
+  padding: 32px 165px 110px 165px;
+  display:grid;
+        grid-template-columns:2fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas: "pancake icecream icecream"        
+                             "pancake breakfast fruitsvegetables";
+        gap: 30px;
+        height: 800px;
+        
+}                 
+
+.pancake {
+  grid-area: pancake;
+border-radius: 8px;
+overflow: hidden; 
+position: relative; 
+}
+.icecream {
+  grid-area: icecream;
+border-radius: 8px;
+overflow: hidden;  
+position: relative;
+}
+.breakfast{
+  grid-area: breakfast;
+border-radius: 8px;
+overflow: hidden;  
+position: relative;
+}
+.fruitsvegetables{
+  grid-area: fruitsvegetables;
+border-radius: 8px;
+overflow: hidden; 
+position: relative; 
+}
+
+.zatemnenie {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 50px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 12px;
+    z-index: 1;
+}
+          
+
+.pancake img,
+.icecream img,
+.breakfast img,
+.fruitsvegetables img {
+    width: 100%;          
+    height: 100%;         
+    object-fit: cover;   
+    display: block;
+}
+
+.pancake h3,
+.icecream h3,
+.breakfast h3,
+.fruitsvegetables h3 {
+    position: absolute;
+    bottom: 25px;
+    left: 30px;
+    font-size: 20px;
+    z-index: 2;
+}
+
+
     </style>
 
-<!--
-    <style>
-      .container {
-        display:grid;
-        grid-template-columns:1fr 1fr;
-        grid-template-rows: 100px 100px;
-        grid-template-areas: "one two" 
-                             "... three";
-        gap: 20px;
-      }
-      .one {
-        grid-area: one;
-      }
 
-      .two {
-        grid-area: two;
-      }
-       .three{
-
-grid-area: three ;
-       }
-    </style> -->
 
 </head>
 <body>
@@ -611,6 +674,37 @@ setTimeout(function onTimeout() {
 </svg> 12 comments</span>
             </div>
         </div>
+      </section>
+
+
+        <section class="picked-by-us"> 
+          <h2>Picked By Us</h2>
+
+          <div class="picked-grid">  
+
+<div class="pancake">
+  <img src = "pancake.jpg" alt = "pancake">
+  <div class="zatemnenie"></div>
+  <h3>Its all about pancakes</h3>
+</div>
+ <div class="icecream">
+  <img src = "icecream.jpg" alt = "icecream">
+  <div class="zatemnenie"></div>
+  <h3>Iccceeesream dream</h3>
+</div>  
+<div class="breakfast">
+  <img src = "breakfast.png" alt = "breakfast">
+  <div class="zatemnenie"></div>
+  <h3>Fast breakfast</h3>
+</div>  
+<div class="fruitsvegetables">
+  <img src = "fruitsvegetables.png" alt = "fruitsvegetables">
+  <div class="zatemnenie"></div>
+  <h3>Fruits and vegetables</h3>
+</div>  
+
+</div> 
+</section>
 
 
 </body>
