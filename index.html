@@ -366,7 +366,7 @@ q::after {
 
       .popular-books h2 {
         color: #000;
-        font-size: 32px;
+        font-size: 36px;
         font-weight: 700;
        margin-bottom: 32px;
 }
@@ -504,11 +504,25 @@ position: relative;
     position: absolute;
     bottom: 20px;
     left: 20px;
-    right: 50px;
     background: white;
     padding: 15px 20px;
-    border-radius: 12px;
+    border-radius: 4px;
     z-index: 1;
+}
+.pancake .zatemnenie {
+    right: 325px;
+}
+
+.icecream .zatemnenie {
+    right: 373px;
+}
+
+.breakfast .zatemnenie {
+    right: 110px;
+}
+
+.fruitsvegetables .zatemnenie {
+    right: 45px;
 }
           
 
@@ -531,6 +545,48 @@ position: relative;
     left: 30px;
     font-size: 20px;
     z-index: 2;
+}
+
+.trending-recepies  {
+          background: #F7B602;;
+          color: #000;
+          text-align: center;
+          font-family: Nunito;
+          font-style: normal;
+          line-height: 48px;
+          padding: 90px 0px 40px 0px;
+}
+.trending-recepies h2 {
+        color: #000;
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 35px;
+        text-align: center;
+}
+
+.trending-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding-left: 165px;
+    padding-right: 165px;
+}
+
+.trending-cards .card {
+    background: #FFF;
+    border-radius: 10px;
+    box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.06);
+    width: 350px;
+    height: 361px;
+    text-align: left;
+}
+
+.trending-cards .card img {
+    border-radius: 8px;
+    width: 310px;
+    height: 236px;
+    display: block;
+    margin: 0 auto;
 }
 
 
@@ -705,6 +761,98 @@ setTimeout(function onTimeout() {
 
 </div> 
 </section>
+
+
+
+<script>
+  let trendingRecepies = document.createElement("section");
+  trendingRecepies.classList.add("trending-recepies");
+
+  let titl = document.createElement("h2");
+  titl.innerHTML = "Trending Recepies";
+  trendingRecepies.appendChild(titl);
+
+  let cardsContainer = document.createElement("div");
+  cardsContainer.classList.add("trending-cards");
+
+  let card1 = document.createElement("div");
+  card1.classList.add("card");
+
+  let view1 = document.createElement("div");
+  view1.classList.add("view");
+  view1.innerHTML = "12000 views";
+  card1.appendChild(view1);
+
+  let img1 = document.createElement("img");
+  img1.src = "trending1.jpg";
+  img1.alt = "Toasts with toping";
+  card1.appendChild(img1);
+
+  let cardTitle1 = document.createElement("h3");
+  cardTitle1.innerHTML = "Toasts with toping";
+  card1.appendChild(cardTitle1);
+
+  let author1 = document.createElement("p");
+  author1.classList.add("author");
+  author1.innerHTML= "John Doe";
+  card1.appendChild(author1);
+
+  cardsContainer.appendChild(card1);
+
+  let card2 = document.createElement("div");
+  card2.classList.add("card");
+
+  let view2 = document.createElement("div");
+  view2.classList.add("view");
+  view2.innerHTML = "12000 views";
+  card2.appendChild(view2);
+
+  let img2 = document.createElement("img");
+  img2.src = "trending2.jpg";
+  img2.alt = "Pancakes with cream";
+  card2.appendChild(img2);
+
+  let cardTitle2 = document.createElement("h3");
+  cardTitle2.innerHTML = "Pancakes with cream";
+  card2.appendChild(cardTitle2);
+
+  let author2 = document.createElement("p");
+  author2.classList.add("author");
+  author2.innerHTML = "John Doe";
+  card2.appendChild(author2);
+
+  cardsContainer.appendChild(card2);
+
+  let card3 = document.createElement("div");
+  card3.classList.add("card");
+
+  let view3 = document.createElement("div");
+  view3.classList.add("view");
+  view3.innerHTML = "12000 views";
+  card3.appendChild(view3);
+
+  let img3 = document.createElement("img");
+  img3.src = "trending3.jpg";
+  img3.alt = "Burger with fries";
+  card3.appendChild(img3);
+
+  let cardTitle3 = document.createElement("h3");
+  cardTitle3.innerHTML = "Burger with fries";
+  card3.appendChild(cardTitle3);
+
+  let author3 = document.createElement("p");
+  author3.classList.add("author");
+  author3.innerHTML = "John Doe";
+  card3.appendChild(author3);
+
+  cardsContainer.appendChild(card3);
+
+  trendingRecepies.appendChild(cardsContainer);
+
+  let pickedSection = document.querySelector(".picked-by-us");
+  pickedSection.after(trendingRecepies);
+
+</script>
 
 
 </body>
