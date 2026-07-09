@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FeedMe</title>
+    <style>/* Padding and borders should not change an element's declared size. */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Browser margin/padding defaults vary wildly across elements and vendors.
+   Start from zero - handle spacing intentionally via the design system. */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* Prevents flex/grid children from overflowing their container.
+   The default min-width: auto on flex and grid children causes overflow bugs
+   that are notoriously confusing to debug. */
+* {
+  min-width: 0;
+}
+
+/* Hidden means hidden: !important is warranted here. */
+[hidden] {
+  display: none !important;
+}
+
+/* Allows CSS transitions to/from intrinsic keyword sizes (auto, min-content, etc.).
+   Only meaningful for users who haven't requested reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    interpolate-size: allow-keywords;
+  }
+}
+
+/* Prevent adjustments of font size after orientation changes in iOS. */
+html {
+  -webkit-text-size-adjust: 100%; /* Safari, iOS Safari */
+  text-size-adjust: 100%;         /* Chrome, Edge, Firefox Android */
+}
+
+/* Ensures the page occupies at least the full viewport.
+   dvh accounts for mobile browser UI (address bar, navigation)
+   and overrides the vh fallback in browsers that support it. */
+body {
+  min-height: 100vh;
+  min-height: 100svh;
+}
+
+/* Reserves space for the scrollbar, when the scrollbar is not showing.
+   Prevents flicker when changes on the page cause the scrollbar to toggle. */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Scroll events captured by the scrolling area you're pointing at, by default. */
+html {
+  overscroll-behavior: contain;
+}
+
+/* Antialiased rendering looks better on high-DPI (retina) screens.
+   On lower-DPI displays, subpixel antialiasing (the default) can be
+   sharper, so this is slightly lossy on older monitors.
+   Enable kerning and ligatures at small font-sizes by default. */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-smooth: always;
+  text-rendering: optimizeLegibility;
+}
+
+/* A unitless line-height avoids inheritance math issues.
+   The smaller default line-height for h-elements avoids excessive
+   line-height when your design system (likely) applies larger fonts.
+   WCAG recommends at least 1.5 for body copy. */
+body {
+  line-height: 1.5;
+}
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.1;
+}
+
+/* Prevents long URLs or unbreakable strings from blowing out their container. */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* Smarter line-breaking:
+   'pretty' avoids widows (lone words on the last line of a paragraph).
+   'balance' distributes heading text more evenly across lines. 
+   Harmless in browsers that don't support them. */
+p {
+  text-wrap: pretty;
+}
+h1, h2, h3, h4, h5, h6 {
+  text-wrap: balance;
+}
+
+/* Headings carry semantic meaning, not visual weight.
+   h1–h6 sizing and boldness should come from your design system. */
+h1, h2, h3, h4, h5, h6 {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+/* Inline embedded content has a gap at the bottom caused by baseline alignment.
+   Block display removes it; max-width prevents overflow.
+   height: auto preserves aspect ratio when max-width constrains the width. */
+img, picture, video, canvas, svg, embed, iframe, object, audio {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Exemption for SVG icons (Heroicons/Lucide/Phosphor, etc.) with explicit sizes:
+   these should not be constrained. */
+svg[width][height] {
+  max-width: revert;
+}
+
+/* Strips visual chrome from buttons so they can be styled from scratch. */
+button {
+  background: none;
+  border: none;
+}
+
+/* Form elements use OS-level fonts and ignore font inheritance by default. */
+input, button, textarea, select {
+  font: inherit;
+}
+
+/* Strips OS-level native styling from interactive elements.
+   Leaves border and background intact, providing accessibility by default.
+   Visual styling should be handled by the design system. */
+input, button, textarea, select {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Anything interactive should signal clickability.
+   'button' attribute targets [type="button"], [type="submit"], etc. */
+button,
+[role="button"],
+label,
+summary,
+select {
+  cursor: pointer;
+}
+
+/* Inherit color by default so links don't always appear in browser-default blue.
+   Text-decoration is intentionally left as underlined for accessibility. */
+a {
+  color: inherit;
+}
+
+/* Removes bullets/numbers.
+   list markers should be an explicit choice, not a default. */
+ul, ol {
+  list-style: none;
+}
+
+/* Tables default to separated borders with spacing between cells.
+   For any custom table design, you'll want to collapse the borders. */
+table {
+  border-collapse: collapse;
+}
+
+/* Browsers apply bold to <th> elements.
+   Boldness in tables should be controlled by your design system. */
+th {
+  font-weight: inherit;
+}
+
+/* Fieldsets have a surprise border and padding that most UIs don't want. */
+fieldset {
+  border: none;
+  padding: 0;
+}
+
+/* More of a normalization, but these are inconsistently styled in some browsers. */
+sub,
+sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+  vertical-align: baseline;
+}
+sub { bottom: -0.25em; }
+sup { top: -0.5em; }
+
+/* Ensures monospace elements render at the same size as surrounding text. */
+pre, code, kbd, samp {
+  font-family: monospace;
+  font-size: inherit;
+}
+
+/* Browser-generated quotation marks are rarely wanted in a design system. */
+blockquote,
+q {
+  quotes: none;
+}
+blockquote::before,
+blockquote::after,
+q::before,
+q::after {
+  content: none;
+}
+
+/* Creates an explicit stacking context on the app root.
+   Prevents z-index bleed from portals, modals, or tooltips
+   from leaking out unexpectedly. */
+#root {
+  isolation: isolate;
+}</style>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+</style>
+    <style>
+        
+        body {
+            color: #000;
+            font-family: Nunito;
+        }
+
+        a {
+            text-decoration: none;
+           
+        }
+
+        .header {
+             background: #FFF;
+             height: 60px;
+             display: flex; 
+             flex-direction: row;          
+             align-items: center;  
+             justify-content: center;      
+             padding: 0 41px;
+             gap: 40px;
+            position: sticky;
+            left: 0;
+            right: 0;
+            top: 0;
+            z-index: 1;
+          }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            padding: 24px 33px;
+        }
+        
+        .logo span {
+            color: #F7B602;
+                  }
+
+        .navigation {
+            display: flex;
+            align-items: center;
+            gap: 63px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 6px 40px;
+        }
+
+        .search-form {  
+            display: flex;
+            align-items: center;
+            background: #EEE;
+            border-radius: 37px;
+            padding: 2px;
+            gap: 274px;
+        }
+
+        .search-form input {
+            border: none;
+            background: transparent;
+            padding: 8px 15px;
+            font-size: 14px;
+            outline: none;
+            width: 180px;
+        }
+
+        .search-form button {
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .sign {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 24px 33px;  
+            flex-shrink: 0; 
+            font-weight: 400;
+        }
+        
+        .sign-up {
+           
+            padding: 8px 18px;
+            
+        }
+
+
+        .main {
+            background: #1f1f1f;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 70px 60px;
+            height: 760px;
+            background-image: url(main.jpg);
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: 710px;
+        }
+
+
+        .main-text h1 {
+            color: #FFF;
+            width: 740;
+            font-size: 56px;
+            font-style: normal;
+            font-weight: 800;
+            line-height: 72px; 
+            text-transform: capitalize;
+        }
+
+
+        .main-text button {
+            background: #f7b602;
+            color: #000;
+            width: 230px;
+            height: 48px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 600;
+            text-transform: capitalize;
+            margin-top: 44px;
+                   }
+
+
+
+        .popular-books {
+          background: #FCFAF8;
+          color: #000;
+          text-align: center;
+          font-family: Nunito;
+          font-size: 36px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 48px;
+          padding: 90px 0px 40px 0px;
+}
+
+      .popular-books h2 {
+        color: #000;
+        font-size: 36px;
+        font-weight: 700;
+       margin-bottom: 32px;
+}
+
+      .cards {
+        background-color: #FCFAF8;
+        display: flex;
+        justify-content: space-between;  
+        gap: 20px;
+        padding-left: 165px;   
+        padding-right: 165px;
+}
+
+      .card {
+          background: #FFF;
+          border-radius: 10px;
+          box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.06);
+          width: 255px;
+          height: 360px;
+          text-align: left;
+}
+
+      .view {
+        color: #515151;
+        text-align: left;
+        font-family: Roboto;
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        padding: 20px 0px 9px 20px;
+
+}
+
+    .card img {
+      border-radius: 8px;
+      width: 215px;
+      height: 215px;
+      display: block;
+      margin: 0 auto; 
+    }
+
+    .card h3 {
+      color: #000;
+      font-family: Nunito;
+      font-size: 20px;
+      font-style: normal;
+      font-weight: 600;
+      line-height: normal;
+      padding: 10px 0px 0px 20px;
+    }
+
+    .author {
+      color: #474747;
+      font-family: Nunito;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      padding: 0px 0px 22px 20px;
+    }
+
+      .stats {
+      display: flex;
+      flex-direction: row;
+      gap: 30px;
+      color: #515151;
+      font-family: Nunito;
+      font-size: 12px;
+      font-style: normal;
+      font-weight: 400;
+      line-height: normal;
+      padding: 0px 20px 15px 20px;
+}
+
+.stats span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+    
+.picked-by-us {
+    background: #FCFAF8;;
+          color: #000;
+          text-align: center;
+          font-family: Nunito;
+          font-size: 36px;
+          font-style: normal;
+          font-weight: 700;
+          line-height: 48px;
+          padding: 90px 0px 40px 0px;
+}
+
+.picked-grid {
+  padding: 32px 165px 110px 165px;
+  display:grid;
+        grid-template-columns:2fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas: "pancake icecream icecream"        
+                             "pancake breakfast fruitsvegetables";
+        gap: 30px;
+        height: 800px;
+        
+}                 
+
+.pancake {
+  grid-area: pancake;
+border-radius: 8px;
+overflow: hidden; 
+position: relative; 
+}
+.icecream {
+  grid-area: icecream;
+border-radius: 8px;
+overflow: hidden;  
+position: relative;
+}
+.breakfast{
+  grid-area: breakfast;
+border-radius: 8px;
+overflow: hidden;  
+position: relative;
+}
+.fruitsvegetables{
+  grid-area: fruitsvegetables;
+border-radius: 8px;
+overflow: hidden; 
+position: relative; 
+}
+
+.zatemnenie {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 4px;
+    z-index: 1;
+}
+.pancake .zatemnenie {
+    right: 325px;
+}
+
+.icecream .zatemnenie {
+    right: 373px;
+}
+
+.breakfast .zatemnenie {
+    right: 110px;
+}
+
+.fruitsvegetables .zatemnenie {
+    right: 45px;
+}
+          
+
+.pancake img,
+.icecream img,
+.breakfast img,
+.fruitsvegetables img {
+    width: 100%;          
+    height: 100%;         
+    object-fit: cover;   
+    display: block;
+}
+
+.pancake h3,
+.icecream h3,
+.breakfast h3,
+.fruitsvegetables h3 {
+    position: absolute;
+    bottom: 25px;
+    left: 30px;
+    font-size: 20px;
+    z-index: 2;
+}
+
+.trending-recepies  {
+          background: #F7B602;;
+          color: #000;
+          text-align: center;
+          font-family: Nunito;
+          font-style: normal;
+          line-height: 48px;
+          padding: 90px 0px 80px 0px;
+}
+.trending-recepies h2 {
+        color: #000;
+        font-size: 36px;
+        font-weight: 700;
+        margin-bottom: 35px;
+        text-align: center;
+}
+
+.trending-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding-left: 165px;
+    padding-right: 165px;
+}
+
+.trending-cards .card {
+    background: #FFF;
+    border-radius: 10px;
+    box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.06);
+    width: 350px;
+    height: 361px;
+    text-align: left;
+}
+
+.trending-cards .card img {
+    border-radius: 8px;
+    width: 310px;
+    height: 236px;
+    display: block;
+    margin: 0 auto;
+}
+
+.footer {
+             background: #1B1C20;
+             font-family: Nunito;
+             height: 90px;
+             display: flex; 
+             flex-direction: row;          
+             align-items: center;  
+             justify-content: center;      
+             padding: 0 4px;
+             gap: 60px; 
+          }
+
+          .logo-footer {
+            color: #FFF;
+            font-size: 24px;
+            font-weight: 700;
+            
+        }
+        
+        .logo-footer span {
+            color: #F7B602;
+                  }
+
+        .navigation-footer{
+            display: flex;
+            align-items: center;
+            gap: 112px;
+            color: #E9E9E9;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 6px 40px;
+        }
+
+         .studyProject {
+            gap: 15px;
+            padding: 24px 33px;  
+            color: #E9E9E9;
+            text-align: center;
+        }
+
+          
+
+    </style>
+
+
+
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">Feed<span>me</span></div>
+
+        <div class="navigation">
+            <a href="#">Cookbooks</a>
+            <a href="#">Recipes</a>
+
+            <form class="search-form">  
+                <input type="search" >
+                <button type="submit"></button>
+            </form>
+        </div>
+
+        <div class="sign">
+            <a href="#" class="sign-in">Sign In</a>
+            <a href="#" class="sign-up">Sign Up</a>
+        </div>
+    </div>
+
+    <section class="main">
+        <div class="main-text">
+            <h1>
+                Find And Create <br>
+                Your Favourite <br>
+                Cookbooks And Recipes
+            </h1>
+            <button >Create Account</button>
+        </div>
+
+        <div class="main-image">
+        </div>
+    </section>
+
+    <section class="popular-books">
+    <h2>Most Popular Cookbooks</h2>
+
+    <div class="cards">
+        <div class="card">
+            <div class="view">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+              </svg>
+              12000 views
+            </div>
+            <img src="card1.jpg" alt="Fresh meat">
+            <h3>Fresh meat</h3>
+            <p class="author">John Doe</p>
+            <div class="stats">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15" fill="none">
+<path d="M8.5 14.9933C7.95175 14.5169 7.3321 14.0213 6.67675 13.4941H6.66825C4.36051 11.645 1.74507 9.55276 0.589918 7.0457C0.210409 6.24754 0.00928776 5.37915 9.69506e-06 4.49866C-0.00252482 3.29051 0.491973 2.13234 1.37175 1.28592C2.25153 0.439505 3.44233 -0.0237223 4.67501 0.000936424C5.67854 0.00248964 6.66046 0.286693 7.5038 0.819688C7.87437 1.05538 8.20966 1.34047 8.5 1.66676C8.79196 1.34175 9.12734 1.05682 9.49705 0.819688C10.34 0.286587 11.3217 0.00236782 12.325 0.000936424C13.5577 -0.0237223 14.7485 0.439505 15.6282 1.28592C16.508 2.13234 17.0025 3.29051 17 4.49866C16.9913 5.38056 16.7902 6.25043 16.4101 7.04986C15.2549 9.55693 12.6403 11.6484 10.3326 13.4941L10.3241 13.5008C9.6679 14.0247 9.0491 14.5202 8.50085 15L8.5 14.9933ZM4.67501 1.66676C3.88324 1.65705 3.11957 1.95398 2.55001 2.49301C2.00124 3.02121 1.69454 3.74491 1.69994 4.49866C1.70964 5.14042 1.85797 5.77289 2.13521 6.35438C2.6805 7.43609 3.41625 8.41505 4.30866 9.24625C5.15101 10.0792 6.12001 10.8854 6.9581 11.5634C7.19015 11.7508 7.42645 11.9399 7.66275 12.129L7.8115 12.2481C8.03845 12.4296 8.27305 12.6179 8.5 12.8028L8.51105 12.7928L8.51615 12.7886H8.52125L8.5289 12.7828H8.53315H8.5374L8.5527 12.7703L8.58755 12.7428L8.5935 12.7378L8.60285 12.7312H8.60795L8.6156 12.7245L9.18 12.2706L9.3279 12.1514C9.56675 11.9607 9.80305 11.7716 10.0351 11.5842C10.8732 10.9062 11.843 10.1008 12.6854 9.26374C13.5779 8.43296 14.3137 7.45425 14.8588 6.37271C15.1411 5.78617 15.2915 5.14708 15.3 4.49866C15.3035 3.74724 14.997 3.02631 14.45 2.49967C13.8815 1.95821 13.1177 1.65883 12.325 1.66676C11.3576 1.6587 10.4328 2.05604 9.7835 2.75871L8.5 4.20797L7.2165 2.75871C6.56716 2.05604 5.64237 1.6587 4.67501 1.66676Z" fill="#515151"/>
+</svg> 499 likes</span>   
+                   <span><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+<path d="M0 15V1.66667C0 0.746192 0.746192 0 1.66667 0H13.3333C14.2538 0 15 0.746192 15 1.66667V10C15 10.9205 14.2538 11.6667 13.3333 11.6667H5C4.63928 11.666 4.28818 11.783 4 12L0 15ZM1.66667 1.66667V11.6667L3.445 10.3333C3.73304 10.1161 4.08423 9.99903 4.445 10H13.3333V1.66667H1.66667Z" fill="#515151"/>
+</svg> 12 comments</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="view">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+              </svg>
+              12000 views
+            </div>
+            <img src="card2.jpg" alt="Pancakes">
+            <h3>Pancakes</h3>
+            <p class="author">John Doe</p>
+            <div class="stats">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15" fill="none">
+<path d="M8.5 14.9933C7.95175 14.5169 7.3321 14.0213 6.67675 13.4941H6.66825C4.36051 11.645 1.74507 9.55276 0.589918 7.0457C0.210409 6.24754 0.00928776 5.37915 9.69506e-06 4.49866C-0.00252482 3.29051 0.491973 2.13234 1.37175 1.28592C2.25153 0.439505 3.44233 -0.0237223 4.67501 0.000936424C5.67854 0.00248964 6.66046 0.286693 7.5038 0.819688C7.87437 1.05538 8.20966 1.34047 8.5 1.66676C8.79196 1.34175 9.12734 1.05682 9.49705 0.819688C10.34 0.286587 11.3217 0.00236782 12.325 0.000936424C13.5577 -0.0237223 14.7485 0.439505 15.6282 1.28592C16.508 2.13234 17.0025 3.29051 17 4.49866C16.9913 5.38056 16.7902 6.25043 16.4101 7.04986C15.2549 9.55693 12.6403 11.6484 10.3326 13.4941L10.3241 13.5008C9.6679 14.0247 9.0491 14.5202 8.50085 15L8.5 14.9933ZM4.67501 1.66676C3.88324 1.65705 3.11957 1.95398 2.55001 2.49301C2.00124 3.02121 1.69454 3.74491 1.69994 4.49866C1.70964 5.14042 1.85797 5.77289 2.13521 6.35438C2.6805 7.43609 3.41625 8.41505 4.30866 9.24625C5.15101 10.0792 6.12001 10.8854 6.9581 11.5634C7.19015 11.7508 7.42645 11.9399 7.66275 12.129L7.8115 12.2481C8.03845 12.4296 8.27305 12.6179 8.5 12.8028L8.51105 12.7928L8.51615 12.7886H8.52125L8.5289 12.7828H8.53315H8.5374L8.5527 12.7703L8.58755 12.7428L8.5935 12.7378L8.60285 12.7312H8.60795L8.6156 12.7245L9.18 12.2706L9.3279 12.1514C9.56675 11.9607 9.80305 11.7716 10.0351 11.5842C10.8732 10.9062 11.843 10.1008 12.6854 9.26374C13.5779 8.43296 14.3137 7.45425 14.8588 6.37271C15.1411 5.78617 15.2915 5.14708 15.3 4.49866C15.3035 3.74724 14.997 3.02631 14.45 2.49967C13.8815 1.95821 13.1177 1.65883 12.325 1.66676C11.3576 1.6587 10.4328 2.05604 9.7835 2.75871L8.5 4.20797L7.2165 2.75871C6.56716 2.05604 5.64237 1.6587 4.67501 1.66676Z" fill="#515151"/>
+</svg> 499 likes</span>
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+<path d="M0 15V1.66667C0 0.746192 0.746192 0 1.66667 0H13.3333C14.2538 0 15 0.746192 15 1.66667V10C15 10.9205 14.2538 11.6667 13.3333 11.6667H5C4.63928 11.666 4.28818 11.783 4 12L0 15ZM1.66667 1.66667V11.6667L3.445 10.3333C3.73304 10.1161 4.08423 9.99903 4.445 10H13.3333V1.66667H1.66667Z" fill="#515151"/>
+</svg> 12 comments</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="view">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+              </svg>
+              12000 views
+            </div>
+            <img src="card3.jpg" alt="Pancakes with berries">
+            <h3>Pancakes with berries</h3>
+            <p class="author">John Doe</p>
+            <div class="stats">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15" fill="none">
+<path d="M8.5 14.9933C7.95175 14.5169 7.3321 14.0213 6.67675 13.4941H6.66825C4.36051 11.645 1.74507 9.55276 0.589918 7.0457C0.210409 6.24754 0.00928776 5.37915 9.69506e-06 4.49866C-0.00252482 3.29051 0.491973 2.13234 1.37175 1.28592C2.25153 0.439505 3.44233 -0.0237223 4.67501 0.000936424C5.67854 0.00248964 6.66046 0.286693 7.5038 0.819688C7.87437 1.05538 8.20966 1.34047 8.5 1.66676C8.79196 1.34175 9.12734 1.05682 9.49705 0.819688C10.34 0.286587 11.3217 0.00236782 12.325 0.000936424C13.5577 -0.0237223 14.7485 0.439505 15.6282 1.28592C16.508 2.13234 17.0025 3.29051 17 4.49866C16.9913 5.38056 16.7902 6.25043 16.4101 7.04986C15.2549 9.55693 12.6403 11.6484 10.3326 13.4941L10.3241 13.5008C9.6679 14.0247 9.0491 14.5202 8.50085 15L8.5 14.9933ZM4.67501 1.66676C3.88324 1.65705 3.11957 1.95398 2.55001 2.49301C2.00124 3.02121 1.69454 3.74491 1.69994 4.49866C1.70964 5.14042 1.85797 5.77289 2.13521 6.35438C2.6805 7.43609 3.41625 8.41505 4.30866 9.24625C5.15101 10.0792 6.12001 10.8854 6.9581 11.5634C7.19015 11.7508 7.42645 11.9399 7.66275 12.129L7.8115 12.2481C8.03845 12.4296 8.27305 12.6179 8.5 12.8028L8.51105 12.7928L8.51615 12.7886H8.52125L8.5289 12.7828H8.53315H8.5374L8.5527 12.7703L8.58755 12.7428L8.5935 12.7378L8.60285 12.7312H8.60795L8.6156 12.7245L9.18 12.2706L9.3279 12.1514C9.56675 11.9607 9.80305 11.7716 10.0351 11.5842C10.8732 10.9062 11.843 10.1008 12.6854 9.26374C13.5779 8.43296 14.3137 7.45425 14.8588 6.37271C15.1411 5.78617 15.2915 5.14708 15.3 4.49866C15.3035 3.74724 14.997 3.02631 14.45 2.49967C13.8815 1.95821 13.1177 1.65883 12.325 1.66676C11.3576 1.6587 10.4328 2.05604 9.7835 2.75871L8.5 4.20797L7.2165 2.75871C6.56716 2.05604 5.64237 1.6587 4.67501 1.66676Z" fill="#515151"/>
+</svg> 499 likes</span>
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+<path d="M0 15V1.66667C0 0.746192 0.746192 0 1.66667 0H13.3333C14.2538 0 15 0.746192 15 1.66667V10C15 10.9205 14.2538 11.6667 13.3333 11.6667H5C4.63928 11.666 4.28818 11.783 4 12L0 15ZM1.66667 1.66667V11.6667L3.445 10.3333C3.73304 10.1161 4.08423 9.99903 4.445 10H13.3333V1.66667H1.66667Z" fill="#515151"/>
+</svg> 12 comments</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="view">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+              </svg>
+              12000 views
+            </div>
+            <img src="card4.jpg" alt="Oatmeal">
+            <h3>Oatmeal</h3>
+            <p class="author">John Doe</p>
+            <div class="stats">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="17" height="15" viewBox="0 0 17 15" fill="none">
+<path d="M8.5 14.9933C7.95175 14.5169 7.3321 14.0213 6.67675 13.4941H6.66825C4.36051 11.645 1.74507 9.55276 0.589918 7.0457C0.210409 6.24754 0.00928776 5.37915 9.69506e-06 4.49866C-0.00252482 3.29051 0.491973 2.13234 1.37175 1.28592C2.25153 0.439505 3.44233 -0.0237223 4.67501 0.000936424C5.67854 0.00248964 6.66046 0.286693 7.5038 0.819688C7.87437 1.05538 8.20966 1.34047 8.5 1.66676C8.79196 1.34175 9.12734 1.05682 9.49705 0.819688C10.34 0.286587 11.3217 0.00236782 12.325 0.000936424C13.5577 -0.0237223 14.7485 0.439505 15.6282 1.28592C16.508 2.13234 17.0025 3.29051 17 4.49866C16.9913 5.38056 16.7902 6.25043 16.4101 7.04986C15.2549 9.55693 12.6403 11.6484 10.3326 13.4941L10.3241 13.5008C9.6679 14.0247 9.0491 14.5202 8.50085 15L8.5 14.9933ZM4.67501 1.66676C3.88324 1.65705 3.11957 1.95398 2.55001 2.49301C2.00124 3.02121 1.69454 3.74491 1.69994 4.49866C1.70964 5.14042 1.85797 5.77289 2.13521 6.35438C2.6805 7.43609 3.41625 8.41505 4.30866 9.24625C5.15101 10.0792 6.12001 10.8854 6.9581 11.5634C7.19015 11.7508 7.42645 11.9399 7.66275 12.129L7.8115 12.2481C8.03845 12.4296 8.27305 12.6179 8.5 12.8028L8.51105 12.7928L8.51615 12.7886H8.52125L8.5289 12.7828H8.53315H8.5374L8.5527 12.7703L8.58755 12.7428L8.5935 12.7378L8.60285 12.7312H8.60795L8.6156 12.7245L9.18 12.2706L9.3279 12.1514C9.56675 11.9607 9.80305 11.7716 10.0351 11.5842C10.8732 10.9062 11.843 10.1008 12.6854 9.26374C13.5779 8.43296 14.3137 7.45425 14.8588 6.37271C15.1411 5.78617 15.2915 5.14708 15.3 4.49866C15.3035 3.74724 14.997 3.02631 14.45 2.49967C13.8815 1.95821 13.1177 1.65883 12.325 1.66676C11.3576 1.6587 10.4328 2.05604 9.7835 2.75871L8.5 4.20797L7.2165 2.75871C6.56716 2.05604 5.64237 1.6587 4.67501 1.66676Z" fill="#515151"/>
+</svg> 499 likes  </span>
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 15 15" fill="none">
+<path d="M0 15V1.66667C0 0.746192 0.746192 0 1.66667 0H13.3333C14.2538 0 15 0.746192 15 1.66667V10C15 10.9205 14.2538 11.6667 13.3333 11.6667H5C4.63928 11.666 4.28818 11.783 4 12L0 15ZM1.66667 1.66667V11.6667L3.445 10.3333C3.73304 10.1161 4.08423 9.99903 4.445 10H13.3333V1.66667H1.66667Z" fill="#515151"/>
+</svg> 12 comments</span>
+            </div>
+        </div>
+      </section>
+
+
+        <section class="picked-by-us"> 
+          <h2>Picked By Us</h2>
+
+          <div class="picked-grid">  
+
+<div class="pancake">
+  <img src = "pancake.jpg" alt = "pancake">
+  <div class="zatemnenie"></div>
+  <h3>Its all about pancakes</h3>
+</div>
+ <div class="icecream">
+  <img src = "icecream.jpg" alt = "icecream">
+  <div class="zatemnenie"></div>
+  <h3>Iccceeesream dream</h3>
+</div>  
+<div class="breakfast">
+  <img src = "breakfast.png" alt = "breakfast">
+  <div class="zatemnenie"></div>
+  <h3>Fast breakfast</h3>
+</div>  
+<div class="fruitsvegetables">
+  <img src = "fruitsvegetables.png" alt = "fruitsvegetables">
+  <div class="zatemnenie"></div>
+  <h3>Fruits and vegetables</h3>
+</div>  
+
+</div> 
+</section>
+
+<div class="footer">
+        <div class="logo-footer">Feed<span>me</span></div>
+
+        <div class="navigation-footer">
+            <a href="#">Cookbooks</a>
+            <a href="#">Recipes</a>
+            <a href="#">About us</a>
+            <a href="#">plzfeedme@itechart.com</a>
+        </div>
+
+        <div class="studyProject">
+            <p>Study Project </p>
+            <p>Borovik Veronika 2026</p>
+            
+        </div>
+    </div>
+
+
+<script>
+  let trendingRecepies = document.createElement("section");
+  trendingRecepies.classList.add("trending-recepies");
+
+  let titl = document.createElement("h2");
+  titl.innerHTML = "Trending Recepies";
+  trendingRecepies.appendChild(titl);
+
+  let cardsContainer = document.createElement("div");
+  cardsContainer.classList.add("trending-cards");
+
+  let card1 = document.createElement("div");
+  card1.classList.add("card");
+
+  let view1 = document.createElement("div");
+  view1.classList.add("view");
+  view1.innerHTML =`
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+    </svg>
+    12000 views`;
+  card1.appendChild(view1);
+
+  let img1 = document.createElement("img");
+  img1.src = "trending1.jpg";
+  img1.alt = "Toasts with toping";
+  card1.appendChild(img1);
+
+  let cardTitle1 = document.createElement("h3");
+  cardTitle1.innerHTML = "Toasts with toping";
+  card1.appendChild(cardTitle1);
+
+  let author1 = document.createElement("p");
+  author1.classList.add("author");
+  author1.innerHTML= "John Doe";
+  card1.appendChild(author1);
+
+  cardsContainer.appendChild(card1);
+
+  let card2 = document.createElement("div");
+  card2.classList.add("card");
+
+  let view2 = document.createElement("div");
+  view2.classList.add("view");
+  view2.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+    </svg>
+    12000 views
+`;
+  card2.appendChild(view2);
+
+  let img2 = document.createElement("img");
+  img2.src = "trending2.jpg";
+  img2.alt = "Pancakes with cream";
+  card2.appendChild(img2);
+
+  let cardTitle2 = document.createElement("h3");
+  cardTitle2.innerHTML = "Pancakes with cream";
+  card2.appendChild(cardTitle2);
+
+  let author2 = document.createElement("p");
+  author2.classList.add("author");
+  author2.innerHTML = "John Doe";
+  card2.appendChild(author2);
+
+  cardsContainer.appendChild(card2);
+
+  let card3 = document.createElement("div");
+  card3.classList.add("card");
+
+  let view3 = document.createElement("div");
+  view3.classList.add("view");
+  view3.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+    </svg>
+    12000 views
+`;
+  card3.appendChild(view3);
+
+  let img3 = document.createElement("img");
+  img3.src = "trending3.jpg";
+  img3.alt = "Burger with fries";
+  card3.appendChild(img3);
+
+  let cardTitle3 = document.createElement("h3");
+  cardTitle3.innerHTML = "Burger with fries";
+  card3.appendChild(cardTitle3);
+
+  let author3 = document.createElement("p");
+  author3.classList.add("author");
+  author3.innerHTML = "John Doe";
+  card3.appendChild(author3);
+
+  cardsContainer.appendChild(card3);
+
+  trendingRecepies.appendChild(cardsContainer);
+
+  let pickedSection = document.querySelector(".picked-by-us");
+  pickedSection.after(trendingRecepies);
+
+</script>
+
+
+</body>
+</html>
