@@ -228,7 +228,7 @@ q::after {
 
         a {
             text-decoration: none;
-            color: #000;
+           
         }
 
         .header {
@@ -554,7 +554,7 @@ position: relative;
           font-family: Nunito;
           font-style: normal;
           line-height: 48px;
-          padding: 90px 0px 40px 0px;
+          padding: 90px 0px 80px 0px;
 }
 .trending-recepies h2 {
         color: #000;
@@ -589,6 +589,47 @@ position: relative;
     margin: 0 auto;
 }
 
+.footer {
+             background: #1B1C20;
+             font-family: Nunito;
+             height: 90px;
+             display: flex; 
+             flex-direction: row;          
+             align-items: center;  
+             justify-content: center;      
+             padding: 0 4px;
+             gap: 60px; 
+          }
+
+          .logo-footer {
+            color: #FFF;
+            font-size: 24px;
+            font-weight: 700;
+            
+        }
+        
+        .logo-footer span {
+            color: #F7B602;
+                  }
+
+        .navigation-footer{
+            display: flex;
+            align-items: center;
+            gap: 112px;
+            color: #E9E9E9;
+            font-size: 16px;
+            font-weight: 400;
+            padding: 6px 40px;
+        }
+
+         .studyProject {
+            gap: 15px;
+            padding: 24px 33px;  
+            color: #E9E9E9;
+            text-align: center;
+        }
+
+          
 
     </style>
 
@@ -596,23 +637,6 @@ position: relative;
 
 </head>
 <body>
-
-  <!--<div class="container" style=" background-color: yellow">
-    <div class="one" style=" background-color: red">one</div>
-    <div class="two" style=" background-color: blue">two</div>
-    <div class="three" style=" background-color: green">three</div>
-  </div>
-
-  <script>
-    let twoelement = document.querySelector(".two");
-setTimeout(function onTimeout() {
-      console.log("Hi");
-}, 500);
-
-
-
-  </script> -->
-
 
     <div class="header">
         <div class="logo">Feed<span>me</span></div>
@@ -762,6 +786,22 @@ setTimeout(function onTimeout() {
 </div> 
 </section>
 
+<div class="footer">
+        <div class="logo-footer">Feed<span>me</span></div>
+
+        <div class="navigation-footer">
+            <a href="#">Cookbooks</a>
+            <a href="#">Recipes</a>
+            <a href="#">About us</a>
+            <a href="#">plzfeedme@itechart.com</a>
+        </div>
+
+        <div class="studyProject">
+            <p>Study Project </p>
+            <p>Borovik Veronika 2026</p>
+            
+        </div>
+    </div>
 
 
 <script>
@@ -780,7 +820,11 @@ setTimeout(function onTimeout() {
 
   let view1 = document.createElement("div");
   view1.classList.add("view");
-  view1.innerHTML = "12000 views";
+  view1.innerHTML =`
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+    </svg>
+    12000 views`;
   card1.appendChild(view1);
 
   let img1 = document.createElement("img");
@@ -804,7 +848,12 @@ setTimeout(function onTimeout() {
 
   let view2 = document.createElement("div");
   view2.classList.add("view");
-  view2.innerHTML = "12000 views";
+  view2.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+    </svg>
+    12000 views
+`;
   card2.appendChild(view2);
 
   let img2 = document.createElement("img");
@@ -828,7 +877,12 @@ setTimeout(function onTimeout() {
 
   let view3 = document.createElement("div");
   view3.classList.add("view");
-  view3.innerHTML = "12000 views";
+  view3.innerHTML = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 11" fill="none">
+        <path d="M8 10.999C6.6879 11.015 5.38936 10.7369 4.2032 10.1859C3.28375 9.74533 2.45812 9.13693 1.7704 8.39315C1.04195 7.62415 0.468374 6.72664 0.08 5.74806L0 5.49981L0.084 5.25156C0.472652 4.27384 1.04499 3.37656 1.7712 2.60647C2.45867 1.86276 3.28403 1.25435 4.2032 0.813744C5.38937 0.26272 6.6879 -0.0153627 8 0.000654691C9.31209 -0.0153351 10.6106 0.262746 11.7968 0.813744C12.7163 1.25425 13.5419 1.86266 14.2296 2.60647C14.9594 3.37443 15.5332 4.27221 15.92 5.25156L16 5.49981L15.916 5.74806C14.661 8.95625 11.4994 11.0534 8 10.999ZM8 1.57184C5.2767 1.48804 2.77713 3.0449 1.6936 5.49981C2.77696 7.95486 5.27663 9.5118 8 9.42778C10.7232 9.51136 13.2227 7.95457 14.3064 5.49981C13.2243 3.04371 10.7238 1.48627 8 1.57184ZM8 7.85659C6.84586 7.86409 5.84749 7.06892 5.61677 5.95842C5.38605 4.84791 5.98742 3.73224 7.05231 3.29517C8.1172 2.85809 9.34819 3.22169 9.99084 4.16313C10.6335 5.10456 10.5083 6.36088 9.692 7.16212C9.24506 7.60619 8.63581 7.85625 8 7.85659Z" fill="#515151"/>
+    </svg>
+    12000 views
+`;
   card3.appendChild(view3);
 
   let img3 = document.createElement("img");
