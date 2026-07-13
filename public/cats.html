@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Породы кошек</title>
+</head>
+<body>
+    <div id="cats-container"></div>
+
+    <script>
+       async function loadCats() {
+    let response = await fetch("https://catfact.ninja/breeds");
+    let body = await response.json();
+
+    let container = document.getElementById("cats-container");
+
+    body.data.forEach(cat => {
+        let div = document.createElement("div");
+
+        let breedSpan = document.createElement("span");
+        breedSpan.innerHTML = cat.breed;
+
+
+        let patternSpan = document.createElement("span");
+        patternSpan.innerHTML = cat.pattern;
+
+        div.appendChild(breedSpan);
+        div.appendChild( patternSpan);
+
+        container.appendChild(div);
+    });
+}
+
+loadCats();
+
+    </script>
+</body>
+</html>
