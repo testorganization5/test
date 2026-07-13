@@ -19,14 +19,14 @@
         let div = document.createElement("div");
 
         let breedSpan = document.createElement("span");
-        breedSpan.innerHTML = cat.breed;
+        breedSpan.innerHTML = cat.breed + " ";
 
 
         let patternSpan = document.createElement("span");
-        patternSpan.innerHTML = cat.pattern;
+        patternSpan.innerHTML = cat.pattern ;
 
         div.appendChild(breedSpan);
-        div.appendChild( patternSpan);
+        div.appendChild(patternSpan);
 
         container.appendChild(div);
     });
