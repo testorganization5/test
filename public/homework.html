@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Табы</title>
+    <style>
+        .tab1 {
+            opacity: 1;
+        }
+        .tab2 {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="buttons">
+        <button class="buttonone">первая</button>
+        <button class="buttontwo">вторая</button>
+    </div>
+
+    <div class="tab1">
+        <h2>Первая вкладка</h2>
+        <p>Текст первой вкладки</p>
+        <ul>
+            <li>Пункт 1</li>
+            <li>Пункт 2</li>
+            <li>Пункт 3</li>
+        </ul>
+    </div>
+
+    <div class="tab2">
+        <h2>Вторая вкладка</h2>
+        <p>Текст второй вкладки</p>
+        <ol>
+            <li>Первый пункт</li>
+            <li>Второй пункт</li>
+            <li>Третий пункт</li>
+        </ol>
+    </div>
+
+    <script>
+        let btn1 = document.querySelector(".buttonone");
+        let btn2 = document.querySelector(".buttontwo");
+        let tab1 = document.querySelector(".tab1");
+        let tab2 = document.querySelector(".tab2");
+
+        btn1.addEventListener("click", function onClickone() {
+            tab1.style.opacity = "1";
+            tab2.style.opacity = "0";
+        });
+
+        btn2.addEventListener("click", function onClicktwo() {
+            tab2.style.opacity = "1";
+            tab1.style.opacity = "0";
+        });
+    </script>
+</body>
+</html>
+
+
+<!--<style>
+    :root{
+        --mycolor:rgb(255, 0, 0);
+    }
+    .green{
+        width: 100px;;
+    }
+    .red{
+        width: 200px;
+    }
+    .test{
+        transition: width 5000ms ease-in-out 0s;
+        background: var(--mycolor);
+
+    }
+
+</style>
+<div class="green test" >дачи</div>
+
+
+<script>
+    let timeoutoperation = new Promise((resolve, reject)=> {
+       setTimeout(()=>{
+            console.log("Hi");
+            resolve();
+        } , 2000);
+    });
+
+window.timeoutoperation = timeoutoperation;
+
+timeoutoperation.then(()=> {
+    console.log("after");
+}).then(()=> {
+    console.log("after2");
+});
+
+window.myfetch = fetch("https://google.com");
+console.log("before");
+    </script>
+
+-->
+

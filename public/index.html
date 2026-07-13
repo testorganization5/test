@@ -908,6 +908,21 @@ position: relative;
 
 </script>
 
+<script>
+  // fetch("https://catfact.ninja/fact").then((response)=>{
+  //   response.json().then((body)=>{
+  //       console.log(body);
+  //   });});
+  
+  async function myFunc() {
+    let response = await fetch("https://catfact.ninja/fact");
+  console.log(response.status); 
+  let body = await response.json();
+  console.log(body);
+};
+myFunc();
+ 
+</script>
 
 </body>
 </html>
